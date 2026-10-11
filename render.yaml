@@ -1,18 +1,15 @@
-# Paid resources: review cost before applying. No Render management API key belongs here.
+# Free/ephemeral deployment: accounts, lists and downloads are lost on restart/redeploy.
+# No persistent disk. No management API keys belong here.
 services:
   - type: web
     name: vio
     runtime: docker
     region: virginia
-    plan: 0.5c-512mb
+    plan: free
     dockerfilePath: ./Dockerfile.render
     dockerContext: .
     autoDeployTrigger: "off"
     healthCheckPath: /api/status
-    disk:
-      name: vio-persistent-data
-      mountPath: /var/data
-      sizeGB: 10
     envVars:
       - key: NODE_ENV
         value: production
