@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "date": "2026-10-11T15:46:38.275Z",
+  "checks": [
+    "Opaque, network-disabled iframe renders iOS Dark, Persian RTL and embedded artwork",
+    "Guest watchlist works with sandbox-denied storage via in-memory fallback",
+    "Embedded MP4 and actual VTT active cues work without network, imports or backend",
+    "HTML explicitly requires backend for account, library and queue; no fabricated features",
+    "Offline mobile layout has no horizontal overflow",
+    "No JavaScript errors and zero attempted network requests"
+  ],
+  "pageErrors": [],
+  "networkRequests": [],
+  "sandbox": "allow-scripts only; opaque origin"
+}

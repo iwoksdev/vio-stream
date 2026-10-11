@@ -1,0 +1,17 @@
+{
+  "passed": true,
+  "date": "2026-10-11T15:35:52.094Z",
+  "checks": [
+    "setup random 256-bit secret",
+    "file permissions 0600",
+    "existing config not overwritten",
+    "CLI create/list/reset",
+    "reset revokes sessions",
+    "scrypt password verification",
+    "SQLite file 0600",
+    "Caddy 2.11.7 config validated",
+    "Compose YAML and no public RPC",
+    "aria2 shell syntax checked"
+  ],
+  "dockerExecution": "not run: daemon absent"
+}

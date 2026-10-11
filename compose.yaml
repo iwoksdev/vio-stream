@@ -1,0 +1,124 @@
+name: vio
+services:
+  volume-init:
+    image: alpine:3.23
+    user: "0:0"
+    command:
+      [
+        "sh",
+        "-c",
+        "chown 1000:1000 /data /downloads /aria /jf-config /jf-cache && chmod 700 /data /aria",
+      ]
+    volumes:
+      - vio_data:/data
+      - downloads:/downloads
+      - aria_data:/aria
+      - jellyfin_config:/jf-config
+      - jellyfin_cache:/jf-cache
+    restart: "no"
+
+  app:
+    build: .
+    init: true
+    restart: unless-stopped
+    depends_on:
+      volume-init:
+        condition: service_completed_successfully
+      aria2:
+        condition: service_started
+    environment:
+      NODE_ENV: production
+      PORT: "3000"
+      DATA_DIR: /data
+      DOWNLOAD_DIR: /downloads
+      APP_ORIGIN: ${APP_ORIGIN:-}
+      COOKIE_SECURE: ${COOKIE_SECURE:-true}
+      ALLOW_REGISTRATION: ${ALLOW_REGISTRATION:-true}
+      YTS_API_BASE: ${YTS_API_BASE:-https://movies-api.accel.li/api/v2/}
+      ARIA2_RPC_URL: http://aria2:6800/jsonrpc
+      ARIA2_RPC_SECRET: ${ARIA2_RPC_SECRET:?Run npm run setup:docker first}
+      DOWNLOAD_ALLOWED_HOSTS: ${DOWNLOAD_ALLOWED_HOSTS:-media.w3.org,download.blender.org,yts.gg}
+      JELLYFIN_URL: ${JELLYFIN_URL:-}
+      JELLYFIN_API_KEY: ${JELLYFIN_API_KEY:-}
+      JELLYFIN_USER_ID: ${JELLYFIN_USER_ID:-}
+      MAX_PLAYBACK_TICKETS: ${MAX_PLAYBACK_TICKETS:-50000}
+    ports:
+      - "127.0.0.1:${VIO_PORT:-8080}:3000"
+    volumes:
+      - vio_data:/data
+      - downloads:/downloads
+    read_only: true
+    tmpfs:
+      - /tmp:size=64m,mode=1777
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    mem_limit: 768m
+
+  aria2:
+    build:
+      context: .
+      dockerfile: docker/aria2.Dockerfile
+    restart: unless-stopped
+    depends_on:
+      volume-init:
+        condition: service_completed_successfully
+    environment:
+      ARIA2_RPC_SECRET: ${ARIA2_RPC_SECRET:?Run npm run setup:docker first}
+      ARIA2_DOWNLOAD_LIMIT: ${ARIA2_DOWNLOAD_LIMIT:-0}
+    # Deliberately no host port for JSON-RPC.
+    volumes:
+      - downloads:/downloads
+      - aria_data:/config
+    read_only: true
+    tmpfs:
+      - /tmp:size=16m,mode=1777
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    mem_limit: 384m
+
+  jellyfin:
+    image: jellyfin/jellyfin:10.11.10
+    profiles: [library]
+    user: "1000:1000"
+    restart: unless-stopped
+    depends_on:
+      volume-init:
+        condition: service_completed_successfully
+    ports:
+      - "127.0.0.1:${JELLYFIN_PORT:-8096}:8096"
+    volumes:
+      - jellyfin_config:/config
+      - jellyfin_cache:/cache
+      - ${MEDIA_DIR:-./media}:/media:ro
+      - downloads:/downloads:ro
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    mem_limit: 2g
+
+  caddy:
+    image: caddy:2.11-alpine
+    profiles: [https]
+    restart: unless-stopped
+    depends_on:
+      app:
+        condition: service_healthy
+    environment:
+      VIO_DOMAIN: ${VIO_DOMAIN:-localhost}
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./docker/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    security_opt: [no-new-privileges:true]
+
+volumes:
+  vio_data:
+  downloads:
+  aria_data:
+  jellyfin_config:
+  jellyfin_cache:
+  caddy_data:
+  caddy_config:

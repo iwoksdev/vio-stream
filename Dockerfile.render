@@ -1,0 +1,24 @@
+# Render: app + private aria2, one persistent disk. No secrets in build args.
+FROM node:24-bookworm-slim AS compile
+WORKDIR /app
+RUN apt-get update && apt-get install -y --no-install-recommends python3 make g++ ca-certificates && rm -rf /var/lib/apt/lists/*
+COPY package.json package-lock.json ./
+RUN npm ci --no-audit --no-fund
+COPY . ./
+RUN npm run build && npm prune --omit=dev --no-audit --no-fund
+
+FROM node:24-bookworm-slim AS runtime
+ENV NODE_ENV=production PORT=10000 PERSISTENT_ROOT=/var/data
+WORKDIR /app
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates aria2 && rm -rf /var/lib/apt/lists/* && mkdir -p /var/data && chown node:node /var/data
+COPY --from=compile --chown=node:node /app/node_modules ./node_modules
+COPY --from=compile --chown=node:node /app/dist ./dist
+COPY --from=compile --chown=node:node /app/public/movie-seed.json ./public/movie-seed.json
+COPY --from=compile --chown=node:node /app/server ./server
+COPY --from=compile --chown=node:node /app/scripts/manage-user.mjs ./scripts/manage-user.mjs
+COPY --from=compile --chown=node:node /app/server.mjs /app/api-lib.mjs /app/package.json /app/streams.json ./
+COPY --chown=node:node docker/render-start.mjs ./docker/render-start.mjs
+# Root is used only to initialize disk ownership; supervisor drops to UID/GID 1000.
+USER root
+EXPOSE 10000
+CMD ["node", "docker/render-start.mjs"]

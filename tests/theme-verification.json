@@ -1,0 +1,21 @@
+{
+  "theme": "ios-dark",
+  "status": "passed",
+  "palette": {
+    "background": "#000000",
+    "surface": "#1c1c1e",
+    "elevated": "#2c2c2e",
+    "accent": "#0a84ff",
+    "switch": "#30d158"
+  },
+  "checks": [
+    "No purple UI tokens",
+    "Neutral glass header and mobile tab bar",
+    "iOS-style segmented control",
+    "Correct dark modal surface",
+    "Green toggle switch",
+    "390px mobile without horizontal overflow",
+    "Existing 8 unit and 13 browser checks pass",
+    "No JavaScript errors"
+  ]
+}

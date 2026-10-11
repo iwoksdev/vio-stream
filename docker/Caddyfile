@@ -1,0 +1,14 @@
+{$VIO_DOMAIN} {
+	encode zstd gzip
+	header {
+		X-Content-Type-Options nosniff
+		Referrer-Policy strict-origin-when-cross-origin
+		Strict-Transport-Security "max-age=31536000"
+		Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' https: data:; media-src 'self' https: blob: data:; connect-src 'self' https:; worker-src 'self' blob:; frame-src https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests"
+		-Server
+	}
+	reverse_proxy app:3000 {
+		# Preserve the public host for same-origin write validation.
+		header_up Host {host}
+	}
+}

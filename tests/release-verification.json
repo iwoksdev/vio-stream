@@ -1,0 +1,13 @@
+{
+  "version": "2.0.0",
+  "date": "2026-10-11T15:54:49.213Z",
+  "passed": true,
+  "backend": 29,
+  "baselineUI": 13,
+  "platformUI": 14,
+  "offlineUI": 6,
+  "productionAudit": 0,
+  "dockerExecution": false,
+  "liveJellyfin": false,
+  "realAria2Download": true
+}

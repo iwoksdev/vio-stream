@@ -1,0 +1,26 @@
+{
+  "passed": true,
+  "date": "2026-10-11T15:52:43.252Z",
+  "checks": [
+    "Unconfigured Jellyfin is explicit, with no invented library titles",
+    "UI registration creates a real server account and HttpOnly session",
+    "Account watchlist and session survive a full reload",
+    "Video.js plays licensed MP4, changes real speed, loads VTT and exposes PiP",
+    "Playback position and movie identity are saved to the private server account",
+    "Explicit consent queues the official CC BY Sintel trailer in a real aria2 daemon",
+    "Pause and resume change the real aria2 job state",
+    "Licensed download completes on disk and serves protected byte-range video",
+    "A completed aria2 file plays through the actual authenticated media endpoint",
+    "Another account cannot read the first user’s queue, watchlist or media",
+    "Six-item mobile navigation and new pages fit 390px and 320px widths",
+    "Development server refuses direct access to database and secrets",
+    "Logout revokes the real server session",
+    "No JavaScript page errors in desktop, player, account and mobile flows"
+  ],
+  "pageErrors": [],
+  "integrations": {
+    "aria2": "real daemon + actual licensed HTTPS file",
+    "jellyfin": "unconfigured in live preview; API contract tested separately",
+    "docker": "configuration prepared; daemon not available in sandbox"
+  }
+}

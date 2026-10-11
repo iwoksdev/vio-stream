@@ -1,0 +1,40 @@
+# Paid resources: review cost before applying. No Render management API key belongs here.
+services:
+  - type: web
+    name: vio
+    runtime: docker
+    region: virginia
+    plan: starter
+    dockerfilePath: ./Dockerfile.render
+    dockerContext: .
+    autoDeployTrigger: off
+    healthCheckPath: /api/status
+    disk:
+      name: vio-persistent-data
+      mountPath: /var/data
+      sizeGB: 10
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: "10000"
+      - key: PERSISTENT_ROOT
+        value: /var/data
+      - key: COOKIE_SECURE
+        value: "true"
+      - key: ALLOW_REGISTRATION
+        value: "true"
+      - key: ARIA2_RPC_SECRET
+        generateValue: true
+      - key: ARIA2_DOWNLOAD_LIMIT
+        value: "0"
+      - key: DOWNLOAD_ALLOWED_HOSTS
+        value: media.w3.org,download.blender.org,yts.gg
+      - key: MAX_PLAYBACK_TICKETS
+        value: "10000"
+      - key: JELLYFIN_URL
+        value: ""
+      - key: JELLYFIN_API_KEY
+        value: ""
+      - key: JELLYFIN_USER_ID
+        value: ""

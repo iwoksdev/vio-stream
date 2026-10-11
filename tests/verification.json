@@ -1,0 +1,19 @@
+{
+  "status": "passed",
+  "checks": [
+    "Home shows six selected films",
+    "Browse and load-more show all 15 cached films",
+    "Persian search opens the correct film",
+    "Download qualities and verified magnet copying work",
+    "Streaming clearly distinguishes unavailable sources and saves custom HLS URLs",
+    "Escape closes dialogs and restores scrolling",
+    "Watchlist persists across reloads",
+    "Advanced quality and year filters apply together",
+    "Local licensed sample plays and resumes (duration 52.2s)",
+    "Live YTS search works through same-origin API",
+    "Shareable film deep links resolve",
+    "Mobile navigation, search, dialog layout and overflow checks pass",
+    "No JavaScript page errors"
+  ],
+  "pageErrors": []
+}
