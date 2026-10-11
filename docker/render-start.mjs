@@ -6,7 +6,8 @@ import os from "node:os";
 const root = path.resolve(process.env.PERSISTENT_ROOT || "/var/data");
 const ariaPort = Number(process.env.ARIA2_LOCAL_PORT || 6800);
 const secret = process.env.ARIA2_RPC_SECRET;
-if (!secret || !/^[A-Za-z0-9_-]{24,200}$/.test(secret))
+// Render-generated secrets can use standard base64 (+, /, =), not only base64url.
+if (!secret || secret.length < 24 || secret.length > 200 || /[^A-Za-z0-9_+/=-]/.test(secret))
   throw new Error(
     "Set a strong ARIA2_RPC_SECRET in Render runtime settings. Never use your Render API key here.",
   );

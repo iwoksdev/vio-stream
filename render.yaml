@@ -4,10 +4,10 @@ services:
     name: vio
     runtime: docker
     region: virginia
-    plan: starter
+    plan: 0.5c-512mb
     dockerfilePath: ./Dockerfile.render
     dockerContext: .
-    autoDeployTrigger: off
+    autoDeployTrigger: "off"
     healthCheckPath: /api/status
     disk:
       name: vio-persistent-data
